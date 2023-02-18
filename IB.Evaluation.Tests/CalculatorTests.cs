@@ -1,10 +1,13 @@
 using IB.Evaluation.Calculators;
 using IB.Evaluation.Calculators.Settings;
+using IB.Evaluation.Parsers;
 using IB.Evaluation.Parsers.Exceptions;
 using IB.Evaluation.Parsers.Nodes.Arabic;
 using IB.Evaluation.Tokenizers;
 using IB.Evaluation.Tokenizers.Enums;
 using IB.Evaluation.Tokenizers.Selectors;
+using IB.Evaluation.Validators;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace IB.Evaluation.Tests
 {
@@ -196,18 +199,20 @@ namespace IB.Evaluation.Tests
         [InlineData("MMCCXXIX", 2229)]
         [InlineData("II", 2)] 
         [InlineData("MMCMXC", 2990)]
+        [InlineData("mMCMXC", 2990)]
+        [InlineData("  m  MCMXC", 2990)]
         public void Can_Convert_Roman_To_Arabic(string input, double expected, bool hasException = false, Type? exceptionType = null)
         {
             double result = 0;
 
             if (!hasException)
             {
-                result = new RomanNumber() { Value = input }.ToArabic();
+                result = RomanNumberParser.ToArabic(input);
                 Assert.Equal(expected, result);
             }
             else
             {
-                Assert.Throws(exceptionType, () => new RomanNumber() { Value = input }.ToArabic());
+                Assert.Throws(exceptionType, () => RomanNumberParser.ToArabic(input));
             }
         }
 
@@ -230,13 +235,29 @@ namespace IB.Evaluation.Tests
 
             if (!hasException)
             {
-                result = new ArabicNumber() { Value = input }.ToRoman();
+                result = ArabicNumberParser.ToRoman(input);
                 Assert.Equal(expected, result);
             }
             else
             {
-                Assert.Throws(exceptionType, () => new ArabicNumber() { Value = input }.ToRoman());
+                Assert.Throws(exceptionType, () => ArabicNumberParser.ToRoman(input));
             }
+        }
+
+
+        [Theory]
+        [InlineData("X", "X")]
+        [InlineData("", "")]
+        [InlineData(" ", "")]
+        [InlineData(" x ", "X")]
+        [InlineData(" A ", "A", true)]
+        public void RomanNumberIsValid(string number, string correctedNumber, bool hasException = false)
+        {
+            var result = RomanNumberValidator.IsValid(ref number);
+            
+            Assert.Equal(!hasException, result);
+            if(!hasException)
+                Assert.Equal(correctedNumber, number);
         }
     }
 }

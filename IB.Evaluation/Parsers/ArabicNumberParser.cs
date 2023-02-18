@@ -3,6 +3,8 @@ using IB.Evaluation.Parsers.Base;
 using IB.Evaluation.Parsers.Nodes.Arabic;
 using IB.Evaluation.Parsers.Nodes.Base;
 using IB.Evaluation.Tokenizers.Enums;
+using IB.Evaluation.Validators;
+using System.Text;
 
 namespace IB.Evaluation.Parsers
 {
@@ -44,6 +46,42 @@ namespace IB.Evaluation.Parsers
                 throw new InvalidOperationException(type.ToString());
 
             return new ArabicBinaryNode(leftNode, rightNode, operation);
+        }
+
+        public static string ToRoman(double input)
+        {
+            ArabicNumberValidator.Fix(ref input);
+            return new ArabicNumber(input).ToRoman();
+        }
+
+        private struct ArabicNumber
+        {
+            public double Value { get; }
+
+            public ArabicNumber(double value)
+            {
+                ArabicNumberValidator.Fix(ref value);
+                Value = value;
+            }
+
+            public string ToRoman()
+            {
+                var value = Value;
+                var result = new StringBuilder();
+                while (value > 0)
+                {
+                    foreach (var key in ArabicNumberValidator.ArabicToRoman.Keys)
+                    {
+                        if (value >= key)
+                        {
+                            value -= key;
+                            result.Append(ArabicNumberValidator.ArabicToRoman[key]);
+                            break;
+                        }
+                    }
+                }
+                return result.ToString();
+            }
         }
     }
 

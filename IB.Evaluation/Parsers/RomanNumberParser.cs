@@ -5,6 +5,7 @@ using IB.Evaluation.Parsers.Nodes.Arabic;
 using IB.Evaluation.Parsers.Nodes.Base;
 using IB.Evaluation.Parsers.Nodes.Roman;
 using IB.Evaluation.Tokenizers.Enums;
+using IB.Evaluation.Validators;
 
 namespace IB.Evaluation.Parsers
 {
@@ -51,17 +52,63 @@ namespace IB.Evaluation.Parsers
             Func<string, string, string> operation;
 
             if (type == TokenTypes.Addition)
-                operation = (a, b) =>  new ArabicNumber( new RomanNumber(a).ToArabic() + new RomanNumber(b).ToArabic()).ToRoman();
+                operation = (a, b) => ArabicNumberParser.ToRoman(new RomanNumber(a).ToArabic() + new RomanNumber(b).ToArabic());
             else if (type == TokenTypes.Substraction)
-                operation = (a, b) => new ArabicNumber(new RomanNumber(a).ToArabic() - new RomanNumber(b).ToArabic()).ToRoman();
+                operation = (a, b) => ArabicNumberParser.ToRoman(new RomanNumber(a).ToArabic() - new RomanNumber(b).ToArabic());
             else if (type == TokenTypes.Multiplication)
-                operation = (a, b) => new ArabicNumber(new RomanNumber(a).ToArabic() * new RomanNumber(b).ToArabic()).ToRoman();
+                operation = (a, b) => ArabicNumberParser.ToRoman(new RomanNumber(a).ToArabic() * new RomanNumber(b).ToArabic());
             else if (type == TokenTypes.Division)
-                operation = (a, b) => new ArabicNumber(new RomanNumber(a).ToArabic() / new RomanNumber(b).ToArabic()).ToRoman();
+                operation = (a, b) => ArabicNumberParser.ToRoman(new RomanNumber(a).ToArabic() / new RomanNumber(b).ToArabic());
             else
                 throw new InvalidOperationException(type.ToString());
 
             return new RomanBinaryNode(leftNode, rightNode, operation);
+        }
+
+        public static double ToArabic(string input)
+        {
+            RomanNumberValidator.IsValid(ref input);
+            return new RomanNumber(input).ToArabic();
+        }
+
+        private struct RomanNumber
+        {
+            public string Value { get; }
+
+            public RomanNumber(string value)
+            {
+                if (!RomanNumberValidator.IsValid(ref value))
+                    throw new InvalidNumberException($"Incorrect roman number {value}");
+
+                Value = value;
+            }
+
+            public double ToArabic()
+            {
+                if (string.IsNullOrWhiteSpace(Value))
+                    return 0.0;
+
+                int result = 0;
+                int prevValue = 0;
+
+                foreach (var r in Value)
+                {
+                    var currentValue = RomanNumberValidator.RomanToArabic[r];
+                    result += currentValue;
+                    if (prevValue != 0 && prevValue < currentValue)
+                    {
+                        if (prevValue == 1 && (currentValue == 5 || currentValue == 10)
+                            || prevValue == 10 && (currentValue == 50 || currentValue == 100)
+                            || prevValue == 100 && (currentValue == 500 || currentValue == 1000))
+                            result -= 2 * prevValue;
+                        else
+                            throw new InvalidNumberException($"Invalid roman number: {Value}");
+                    }
+                    prevValue = currentValue;
+                }
+
+                return result;
+            }
         }
     }
 
