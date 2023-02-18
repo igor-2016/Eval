@@ -7,7 +7,6 @@ using IB.Evaluation.Tokenizers;
 using IB.Evaluation.Tokenizers.Enums;
 using IB.Evaluation.Tokenizers.Selectors;
 using IB.Evaluation.Validators;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace IB.Evaluation.Tests
 {

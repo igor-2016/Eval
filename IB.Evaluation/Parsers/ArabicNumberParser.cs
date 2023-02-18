@@ -1,5 +1,4 @@
-﻿using IB.Evaluation.Calculators.Settings;
-using IB.Evaluation.Parsers.Base;
+﻿using IB.Evaluation.Parsers.Base;
 using IB.Evaluation.Parsers.Nodes.Arabic;
 using IB.Evaluation.Parsers.Nodes.Base;
 using IB.Evaluation.Tokenizers.Enums;

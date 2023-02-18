@@ -1,7 +1,4 @@
 ﻿using IB.Evaluation.Parsers.Exceptions;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace IB.Evaluation.Validators
 {
