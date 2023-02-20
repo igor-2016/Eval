@@ -191,7 +191,8 @@ namespace IB.Evaluation.Tests
         [InlineData("X2", 0, true, typeof(InvalidNumberException))]
         [InlineData("X X", 20)]
         [InlineData("IX", 9)]
-        [InlineData("VX", 5, true, typeof(InvalidNumberException))]
+        [InlineData("VX", 0, true, typeof(InvalidNumberException))]
+        [InlineData("VXI", 0, true, typeof(InvalidNumberException))]
         [InlineData("LXXXIX", 89)]
         [InlineData("LXXXVIII", 88)]
         [InlineData("MMMDCCXXIV", 3724)] 
@@ -200,6 +201,8 @@ namespace IB.Evaluation.Tests
         [InlineData("MMCMXC", 2990)]
         [InlineData("mMCMXC", 2990)]
         [InlineData("  m  MCMXC", 2990)]
+        [InlineData("IXI", 10, true, typeof(InvalidNumberException))] // wrong
+        [InlineData("MMDCCXXIV", 2724)]
         public void Can_Convert_Roman_To_Arabic(string input, double expected, bool hasException = false, Type? exceptionType = null)
         {
             double result = 0;

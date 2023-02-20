@@ -1,5 +1,6 @@
 ﻿using IB.Evaluation.Parsers.Base;
 using IB.Evaluation.Parsers.Exceptions;
+using IB.Evaluation.Parsers.Extentions;
 using IB.Evaluation.Parsers.Nodes.Base;
 using IB.Evaluation.Parsers.Nodes.Roman;
 using IB.Evaluation.Tokenizers.Enums;
@@ -86,6 +87,14 @@ namespace IB.Evaluation.Parsers
                 if (string.IsNullOrWhiteSpace(Value))
                     return 0.0;
 
+                return (int)RomanNumberExtentions.Calc(Value);
+            }
+
+            public double ToArabicWithoutValidation()
+            {
+                if (string.IsNullOrWhiteSpace(Value))
+                    return 0.0;
+
                 int result = 0;
                 int prevValue = 0;
 
@@ -108,6 +117,11 @@ namespace IB.Evaluation.Parsers
                 return result;
             }
         }
+
+        
+        
+
+        
     }
 
 }
