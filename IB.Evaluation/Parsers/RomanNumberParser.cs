@@ -64,6 +64,11 @@ namespace IB.Evaluation.Parsers
             return new RomanBinaryNode(leftNode, rightNode, operation);
         }
 
+        /// <summary>
+        /// For testing ONLY
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static double ToArabic(string input)
         {
             RomanNumberValidator.IsValid(ref input);
