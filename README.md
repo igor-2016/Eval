@@ -1,4 +1,4 @@
 # Eval
-A library that can to calculate simple expressions like addition, subtraction, multiplication with Roman numbers and Arabic (as a bonus).
+A library that can calculate simple expressions such as addition, subtraction, multiplication with Roman numerals and Arabic (as a bonus).
 
 
